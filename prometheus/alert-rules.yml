@@ -1,0 +1,11 @@
+groups:
+- name: self-healing-alerts
+  rules:
+  - alert: HighFailureRate
+    expr: increase(app_failures_total[5m]) > 5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      description: "High failure rate detected in self-healing service"
+      summary: "Failures exceeded threshold"

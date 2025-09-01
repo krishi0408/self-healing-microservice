@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: self-healing-deployment
+  labels:
+    app: self-healing-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: self-healing-app
+  template:
+    metadata:
+      labels:
+        app: self-healing-app
+    spec:
+      imagePullSecrets:
+      - name: regcred   # 👈 tells k8s to use DockerHub credentials, if accessing private repo
+      containers:
+      - name: self-healing-app
+        image: krishi0408/self-healing-microservice:latest
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: self-healing-service
+spec:
+  selector:
+    app: self-healing
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: ClusterIP
